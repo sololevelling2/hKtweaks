@@ -1,0 +1,44 @@
+name: Build & Sign hKtweaks APK
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v4
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+
+      - name: Decode Linkit Keystore
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > "$GITHUB_WORKSPACE/Linkit.jks"
+          echo "Keystore decoded successfully"
+
+      - name: Make gradlew executable
+        run: chmod +x gradlew
+
+      - name: Build Signed Release APK
+        env:
+          KEYSTORE_PATH: ${{ github.workspace }}/Linkit.jks
+          KEYSTORE_STORE_PASSWORD: Linkit
+          KEYSTORE_ALIAS: Linkit
+          KEYSTORE_KEY_PASSWORD: Linkit
+        run: ./gradlew assembleRelease --no-daemon
+
+      - name: Upload Signed APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: hKtweaks-signed-release
+          path: app/build/outputs/apk/release/*.apk
+          retention-days: 30
