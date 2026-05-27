@@ -1,0 +1,53 @@
+name: "Linkit Key Factory \U0001F6E1\uFE0F"
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate Linkit Keystore
+        run: |
+          KEY_NAME="Linkit"
+          PASSWORD="Linkit"
+          JKS_FILE="${KEY_NAME}.jks"
+          INFO_FILE="Linkit_Key_Info.txt"
+
+          echo "--- Generating Keystore ---"
+          keytool -genkey -v \
+            -keystore "$JKS_FILE" \
+            -alias "$KEY_NAME" \
+            -keyalg RSA \
+            -keysize 2048 \
+            -validity 10000 \
+            -storepass "$PASSWORD" \
+            -keypass "$PASSWORD" \
+            -dname "CN=${KEY_NAME}, OU=Dev, O=LinkitFortress, L=Global, S=Security, C=US"
+
+          echo "--- Creating Info File ---"
+          {
+            echo "Key Name / Alias : $KEY_NAME"
+            echo "Store Password   : $PASSWORD"
+            echo "Key Password     : $PASSWORD"
+            echo "Format           : JKS"
+            echo "Generated Date   : $(date)"
+          } > "$INFO_FILE"
+
+          echo "--- Encoding to Base64 ---"
+          base64 -w 0 "$JKS_FILE" > "${JKS_FILE}.base64"
+          echo ""
+          echo "=== COPY YOUR BASE64 KEY BELOW (for KEYSTORE_BASE64 secret) ==="
+          cat "${JKS_FILE}.base64"
+          echo ""
+          echo "=== END OF BASE64 ==="
+
+      - name: Upload Keystore Package
+        uses: actions/upload-artifact@v4
+        with:
+          name: Linkit-Release-Keys
+          path: |
+            Linkit.jks
+            Linkit_Key_Info.txt
+            Linkit.jks.base64
+          retention-days: 1
