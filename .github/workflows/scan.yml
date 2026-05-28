@@ -1,0 +1,54 @@
+name: Fast Error Scanner
+
+on:
+  workflow_dispatch:
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v4
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+          cache: gradle
+
+      - name: Make gradlew executable
+        run: chmod +x gradlew
+
+      - name: Resolve all dependencies (catch missing libs)
+        continue-on-error: true
+        run: |
+          echo "=== DEPENDENCY RESOLUTION CHECK ==="
+          ./gradlew :app:dependencies \
+            --configuration releaseRuntimeClasspath \
+            --no-daemon 2>&1 \
+            | grep -E "FAILED|Could not|ERROR|error:" | head -30 || true
+
+      - name: Check AAR metadata (catch version conflicts)
+        continue-on-error: true
+        run: |
+          echo "=== AAR METADATA CHECK ==="
+          ./gradlew :app:checkReleaseAarMetadata \
+            --no-daemon 2>&1 \
+            | grep -E "FAILED|Could not|error:|What went wrong|Execution failed" | head -30 || true
+
+      - name: Compile Java sources (catch code errors)
+        continue-on-error: true
+        run: |
+          echo "=== JAVA COMPILE CHECK ==="
+          ./gradlew :app:compileReleaseJavaWithJavac \
+            --no-daemon 2>&1 \
+            | grep -E "error:|FAILED|Could not|What went wrong" | head -50 || true
+
+      - name: Summary — all collected errors
+        run: |
+          echo "=== FULL ERROR SUMMARY ==="
+          ./gradlew :app:checkReleaseAarMetadata :app:compileReleaseJavaWithJavac \
+            --no-daemon --continue 2>&1 \
+            | grep -E "FAILED|Could not find|Could not resolve|error:|What went wrong|Execution failed|BUILD FAILED" \
+            | sort -u | head -60 || true
