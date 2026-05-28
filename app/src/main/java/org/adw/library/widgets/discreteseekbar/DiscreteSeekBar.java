@@ -31,7 +31,6 @@ import android.os.Parcelable;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.graphics.drawable.DrawableCompat;
-import androidx.core.view.MotionEventCompat;
 import androidx.core.view.ViewCompat;
 import android.util.AttributeSet;
 import android.util.TypedValue;
@@ -705,7 +704,7 @@ public class DiscreteSeekBar extends View {
         if (!isEnabled()) {
             return false;
         }
-        int actionMasked = MotionEventCompat.getActionMasked(event);
+        int actionMasked = event.getActionMasked();
         switch (actionMasked) {
             case MotionEvent.ACTION_DOWN:
                 mDownX = event.getX();

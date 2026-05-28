@@ -16,8 +16,6 @@
 
 package org.adw.library.widgets.discreteseekbar.internal;
 
-import com.hades.hKtweaks.R;
-
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
@@ -33,7 +31,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import org.adw.library.widgets.discreteseekbar.R;
+import com.hades.hKtweaks.R;
 import org.adw.library.widgets.discreteseekbar.internal.compat.SeekBarCompat;
 import org.adw.library.widgets.discreteseekbar.internal.drawable.MarkerDrawable;
 
