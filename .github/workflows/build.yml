@@ -19,11 +19,26 @@ jobs:
         with:
           java-version: '11'
           distribution: 'temurin'
+          cache: gradle
 
-      - name: Decode Linkit Keystore
+      - name: Generate Linkit Keystore
         run: |
-          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > "$GITHUB_WORKSPACE/Linkit.jks"
-          echo "Keystore decoded successfully"
+          if [ -n "${{ secrets.KEYSTORE_BASE64 }}" ]; then
+            echo "Using stored keystore from secret"
+            echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > "$GITHUB_WORKSPACE/Linkit.jks"
+          else
+            echo "Generating fresh Linkit keystore"
+            keytool -genkey -v \
+              -keystore "$GITHUB_WORKSPACE/Linkit.jks" \
+              -alias Linkit \
+              -keyalg RSA \
+              -keysize 2048 \
+              -validity 10000 \
+              -storepass Linkit \
+              -keypass Linkit \
+              -dname "CN=Linkit, OU=Dev, O=LinkitFortress, L=Global, S=Security, C=US"
+          fi
+          echo "Keystore ready: $(ls -lh $GITHUB_WORKSPACE/Linkit.jks)"
 
       - name: Make gradlew executable
         run: chmod +x gradlew
