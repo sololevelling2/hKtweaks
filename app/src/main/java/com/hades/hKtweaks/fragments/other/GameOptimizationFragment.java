@@ -1,5 +1,6 @@
 package com.hades.hKtweaks.fragments.other;
 
+import android.view.View;
 import java.util.Arrays;
 import java.util.List;
 
@@ -43,21 +44,16 @@ public class GameOptimizationFragment extends RecyclerViewFragment {
 
         String curGov = RootUtils.runCommand(
             "cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor 2>/dev/null").trim();
-        SwitchView gameMode = new SwitchView();
-        gameMode.setTitle(getString(R.string.game_mode));
-        gameMode.setSummaryOn(getString(R.string.game_mode_on));
-        gameMode.setSummaryOff(getString(R.string.game_mode_off));
-        gameMode.setChecked("performance".equals(curGov));
-        gameMode.addOnSwitchListener((switchView, checked) -> {
-            if (checked) {
-                applyGameMode();
-                Utils.toast(getString(R.string.game_mode_on), getActivity());
-            } else {
-                restoreDefault();
-                Utils.toast(getString(R.string.game_mode_off), getActivity());
-            }
+        SwitchView sw = new SwitchView();
+        sw.setTitle(getString(R.string.game_mode));
+        sw.setSummaryOn(getString(R.string.game_mode_on));
+        sw.setSummaryOff(getString(R.string.game_mode_off));
+        sw.setChecked("performance".equals(curGov));
+        sw.addOnSwitchListener((switchView, checked) -> {
+            if (checked) { applyGameMode(); Utils.toast(getString(R.string.game_mode_on), getActivity()); }
+            else          { restoreDefault(); Utils.toast(getString(R.string.game_mode_off), getActivity()); }
         });
-        card.addItem(gameMode);
+        card.addItem(sw);
         items.add(card);
     }
 
@@ -89,29 +85,29 @@ public class GameOptimizationFragment extends RecyclerViewFragment {
         CardView card = new CardView(getActivity());
         card.setTitle(getString(R.string.game_gpu_boost));
 
-        String gpuMaxPath = "/sys/kernel/gpu/gpu_max_clock";
-        String gpuMinPath = "/sys/kernel/gpu/gpu_min_clock";
-        String maxFreq = RootUtils.runCommand("cat " + gpuMaxPath + " 2>/dev/null").trim();
-        String minFreq = RootUtils.runCommand("cat " + gpuMinPath + " 2>/dev/null").trim();
-        String curMin  = RootUtils.runCommand("cat " + gpuMinPath + " 2>/dev/null").trim();
+        final String maxPath = "/sys/kernel/gpu/gpu_max_clock";
+        final String minPath = "/sys/kernel/gpu/gpu_min_clock";
+        String maxFreq = RootUtils.runCommand("cat " + maxPath + " 2>/dev/null").trim();
+        String minFreq = RootUtils.runCommand("cat " + minPath + " 2>/dev/null").trim();
+        String curMin  = RootUtils.runCommand("cat " + minPath + " 2>/dev/null").trim();
 
         DescriptionView desc = new DescriptionView();
         desc.setSummary(getString(R.string.game_gpu_boost_summary));
         card.addItem(desc);
 
-        SwitchView gpuBoost = new SwitchView();
-        gpuBoost.setTitle(getString(R.string.game_gpu_boost));
-        gpuBoost.setSummaryOn(getString(R.string.game_gpu_boost));
-        gpuBoost.setSummaryOff(getString(R.string.game_gpu_boost_summary));
-        gpuBoost.setChecked(!maxFreq.isEmpty() && maxFreq.equals(curMin));
-        gpuBoost.addOnSwitchListener((switchView, checked) -> {
+        SwitchView sw = new SwitchView();
+        sw.setTitle(getString(R.string.game_gpu_boost));
+        sw.setSummaryOn(getString(R.string.game_gpu_boost));
+        sw.setSummaryOff(getString(R.string.game_gpu_boost_summary));
+        sw.setChecked(!maxFreq.isEmpty() && maxFreq.equals(curMin));
+        sw.addOnSwitchListener((switchView, checked) -> {
             if (checked && !maxFreq.isEmpty()) {
-                RootUtils.runCommand("echo " + maxFreq + " > " + gpuMinPath + " 2>/dev/null");
+                RootUtils.runCommand("echo " + maxFreq + " > " + minPath + " 2>/dev/null");
             } else if (!minFreq.isEmpty()) {
-                RootUtils.runCommand("echo " + minFreq + " > " + gpuMinPath + " 2>/dev/null");
+                RootUtils.runCommand("echo " + minFreq + " > " + minPath + " 2>/dev/null");
             }
         });
-        card.addItem(gpuBoost);
+        card.addItem(sw);
         items.add(card);
     }
 
@@ -123,12 +119,12 @@ public class GameOptimizationFragment extends RecyclerViewFragment {
         desc.setSummary(getString(R.string.game_network_priority_summary));
         card.addItem(desc);
 
-        SwitchView netPri = new SwitchView();
-        netPri.setTitle(getString(R.string.game_network_priority));
-        netPri.setSummaryOn(getString(R.string.game_network_priority));
-        netPri.setSummaryOff(getString(R.string.game_network_priority_summary));
-        netPri.setChecked(false);
-        netPri.addOnSwitchListener((switchView, checked) -> {
+        SwitchView sw = new SwitchView();
+        sw.setTitle(getString(R.string.game_network_priority));
+        sw.setSummaryOn(getString(R.string.game_network_priority));
+        sw.setSummaryOff(getString(R.string.game_network_priority_summary));
+        sw.setChecked(false);
+        sw.addOnSwitchListener((switchView, checked) -> {
             if (checked) {
                 RootUtils.runCommand("sysctl -w net.ipv4.tcp_low_latency=1 2>/dev/null");
                 RootUtils.runCommand("sysctl -w net.core.netdev_max_backlog=2000 2>/dev/null");
@@ -139,7 +135,7 @@ public class GameOptimizationFragment extends RecyclerViewFragment {
                 RootUtils.runCommand("sysctl -w net.ipv4.tcp_fin_timeout=60 2>/dev/null");
             }
         });
-        card.addItem(netPri);
+        card.addItem(sw);
         items.add(card);
     }
 
@@ -152,16 +148,17 @@ public class GameOptimizationFragment extends RecyclerViewFragment {
         card.addItem(desc);
 
         boolean overridden = "1".equals(
-            RootUtils.runCommand("getprop persist.vendor.disable.thermal.control 2>/dev/null").trim());
-        SwitchView thermal = new SwitchView();
-        thermal.setTitle(getString(R.string.game_thermal_override));
-        thermal.setSummaryOn(getString(R.string.game_thermal_override));
-        thermal.setSummaryOff(getString(R.string.game_thermal_override_summary));
-        thermal.setChecked(overridden);
-        thermal.addOnSwitchListener((switchView, checked) ->
+            RootUtils.runCommand(
+                "getprop persist.vendor.disable.thermal.control 2>/dev/null").trim());
+        SwitchView sw = new SwitchView();
+        sw.setTitle(getString(R.string.game_thermal_override));
+        sw.setSummaryOn(getString(R.string.game_thermal_override));
+        sw.setSummaryOff(getString(R.string.game_thermal_override_summary));
+        sw.setChecked(overridden);
+        sw.addOnSwitchListener((switchView, checked) ->
             RootUtils.runCommand("setprop persist.vendor.disable.thermal.control "
                 + (checked ? "1" : "0") + " 2>/dev/null"));
-        card.addItem(thermal);
+        card.addItem(sw);
         items.add(card);
     }
 
@@ -173,13 +170,13 @@ public class GameOptimizationFragment extends RecyclerViewFragment {
         desc.setSummary(getString(R.string.game_disable_bg_summary));
         card.addItem(desc);
 
-        ButtonView killBtn = new ButtonView();
-        killBtn.setTitle(getString(R.string.game_disable_bg));
-        killBtn.setOnItemClickListener(item -> {
+        ButtonView btn = new ButtonView();
+        btn.setText(getString(R.string.game_disable_bg));
+        btn.setOnClickListener(v -> {
             RootUtils.runCommand("am kill-all 2>/dev/null");
             Utils.toast(getString(R.string.game_disable_bg_summary), getActivity());
         });
-        card.addItem(killBtn);
+        card.addItem(btn);
         items.add(card);
     }
 
