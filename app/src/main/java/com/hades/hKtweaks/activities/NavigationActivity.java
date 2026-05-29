@@ -74,6 +74,9 @@ import com.hades.hKtweaks.fragments.kernel.VMFragment;
 import com.hades.hKtweaks.fragments.kernel.WakeFragment;
 import com.hades.hKtweaks.fragments.other.AboutFragment;
 import com.hades.hKtweaks.fragments.other.DonationFragment;
+import com.hades.hKtweaks.fragments.other.BluetoothFixFragment;
+import com.hades.hKtweaks.fragments.other.GameOptimizationFragment;
+import com.hades.hKtweaks.fragments.other.NetworkFragment;
 import com.hades.hKtweaks.fragments.other.SettingsFragment;
 import com.hades.hKtweaks.fragments.statistics.DeviceFragment;
 import com.hades.hKtweaks.fragments.statistics.InputsFragment;
@@ -289,10 +292,11 @@ public class NavigationActivity extends BaseActivity
         mFragments.add(new NavigationActivity.NavigationFragment(R.string.on_boot, OnBootFragment.class, R.drawable.ic_start));
         mFragments.add(new NavigationActivity.NavigationFragment(R.string.other));
         mFragments.add(new NavigationActivity.NavigationFragment(R.string.settings, SettingsFragment.class, R.drawable.ic_settings));
-        mFragments.add(new NavigationActivity.NavigationFragment(R.string.donation_title, DonationFragment.class, R.drawable.ic_donation));
         mFragments.add(new NavigationActivity.NavigationFragment(R.string.about, AboutFragment.class, R.drawable.ic_about));
-        //mFragments.add(new NavigationActivity.NavigationFragment(R.string.contributors, ContributorsFragment.class, R.drawable.ic_people));
-        //mFragments.add(new NavigationActivity.NavigationFragment(R.string.help, HelpFragment.class, R.drawable.ic_help));
+        mFragments.add(new NavigationActivity.NavigationFragment(R.string.extra_features));
+        mFragments.add(new NavigationActivity.NavigationFragment(R.string.network, NetworkFragment.class, R.drawable.ic_wifi));
+        mFragments.add(new NavigationActivity.NavigationFragment(R.string.game_optimization, GameOptimizationFragment.class, R.drawable.ic_game));
+        mFragments.add(new NavigationActivity.NavigationFragment(R.string.bluetooth_fix, BluetoothFixFragment.class, R.drawable.ic_bluetooth));
     }
 
     private void init(Bundle savedInstanceState) {
