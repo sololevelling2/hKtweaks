@@ -1344,4 +1344,62 @@
     <string name="swInfo">Software Info</string>
     <string name="hwInfo">Hardware Info</string>
     <string name="cpu_features">CPU Features/Extensions</string>
+
+    <!-- hKtweaks Extra Features: Navigation labels -->
+    <string name="extra_features">Extra Features</string>
+    <string name="network">Network</string>
+    <string name="game_optimization">Game Optimization</string>
+    <string name="bluetooth_fix">Bluetooth Fix</string>
+
+    <!-- NetworkFragment -->
+    <string name="network_info">Network Info</string>
+    <string name="ip_address">IP Address</string>
+    <string name="gateway">Gateway</string>
+    <string name="wifi_signal">WiFi Signal</string>
+    <string name="wifi_speed">WiFi Speed Control</string>
+    <string name="wifi_speed_summary">Limit download bandwidth via traffic shaping (requires tc)</string>
+    <string name="max_download">Max Download</string>
+    <string name="apply_limits">Apply Limit</string>
+    <string name="reset_limits">Remove Limit</string>
+    <string name="unlimited">Limit removed — full speed restored</string>
+    <string name="connected_devices">Connected Devices</string>
+    <string name="connected_devices_summary">ARP table — devices on your local network. Toggle to block via iptables.</string>
+    <string name="cut_user">Block this device</string>
+    <string name="cut_user_summary">Device allowed — tap to block</string>
+    <string name="blocked">Blocked</string>
+    <string name="active">Active</string>
+    <string name="scan_devices">Refresh Devices</string>
+    <string name="scanning">Scanning…</string>
+    <string name="no_devices">No devices in ARP table</string>
+
+    <!-- GameOptimizationFragment -->
+    <string name="game_mode">Game Mode</string>
+    <string name="game_mode_on">Game mode active — performance unlocked</string>
+    <string name="game_mode_off">Game mode inactive</string>
+    <string name="game_mode_summary">Applies performance governor, GPU boost, low-latency network and clears background apps</string>
+    <string name="game_cpu_governor">CPU Governor</string>
+    <string name="game_cpu_governor_summary">Select governor applied to all CPU cores</string>
+    <string name="game_gpu_boost">GPU Boost</string>
+    <string name="game_gpu_boost_summary">Lock minimum GPU frequency to maximum (may cause heat)</string>
+    <string name="game_network_priority">Low-Latency Network</string>
+    <string name="game_network_priority_summary">Tune sysctl for lower TCP latency — helps online gaming</string>
+    <string name="game_thermal_override">Thermal Override</string>
+    <string name="game_thermal_override_summary">Disable vendor thermal limits — sustained peak performance at cost of heat</string>
+    <string name="game_disable_bg">Kill Background Apps</string>
+    <string name="game_disable_bg_summary">Background apps killed — frees RAM for foreground game</string>
+
+    <!-- BluetoothFixFragment -->
+    <string name="bt_reset">Reset Bluetooth Stack</string>
+    <string name="bt_reset_summary">Clears BT cache and restarts the Bluetooth service — fixes most connection issues</string>
+    <string name="bt_clear_hid">Clear HID Cache</string>
+    <string name="bt_clear_hid_summary">Deletes bt_config.conf — fixes HID devices (keyboards, mice) not reconnecting</string>
+    <string name="bt_fix_keyboard">Fix Keyboard Input</string>
+    <string name="bt_fix_keyboard_summary">Patches BT HID descriptor cache and BT profile settings — targets One UI 6.1.1 keyboard freeze on reconnect</string>
+    <string name="bt_coexistence">BT/WiFi Coexistence</string>
+    <string name="bt_coexistence_summary">Controls how Bluetooth and WiFi coexist — disable to reduce interference if BT drops when on WiFi</string>
+    <string name="bt_hci_snoop">HCI Snoop Log</string>
+    <string name="bt_hci_snoop_summary">Enable Bluetooth HCI snoop log for advanced debugging</string>
+    <string name="bt_fix_applied">Fix applied — reconnect your Bluetooth device</string>
+    <string name="bt_service_restarting">Restarting Bluetooth service…</string>
+
 </resources>
