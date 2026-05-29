@@ -1347,7 +1347,6 @@
 
     <!-- hKtweaks Extra Features: Navigation labels -->
     <string name="extra_features">Extra Features</string>
-    <string name="network">Network</string>
     <string name="game_optimization">Game Optimization</string>
     <string name="bluetooth_fix">Bluetooth Fix</string>
 
