@@ -15,4 +15,16 @@
 
     <color name="rcBackground_light">#dcdcdc</color>
     <color name="rcBackground_dark">#000000</color>
+
+    <!-- UI/UX Pro Max: semantic tokens for new fragments (dark-first, Material-compliant) -->
+    <color name="colorNetworkAccent">#2F81F7</color>
+    <color name="colorGameAccent">#EF5350</color>
+    <color name="colorBtAccent">#00BCD4</color>
+    <color name="colorSuccess">#3FB950</color>
+    <color name="colorWarning">#D29922</color>
+    <color name="colorError">#F85149</color>
+    <color name="colorPrimary">#1976D2</color>
+    <color name="colorPrimaryDark">#1565C0</color>
+    <color name="colorAccent">#2F81F7</color>
+
 </resources>
