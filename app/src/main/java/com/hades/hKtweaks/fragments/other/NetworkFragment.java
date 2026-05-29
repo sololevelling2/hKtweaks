@@ -1,5 +1,6 @@
 package com.hades.hKtweaks.fragments.other;
 
+import android.view.View;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,7 +42,7 @@ public class NetworkFragment extends RecyclerViewFragment {
 
         DescriptionView ipView = new DescriptionView();
         ipView.setTitle(getString(R.string.ip_address));
-        ipView.setSummary(ip == null || ip.trim().isEmpty()
+        ipView.setSummary((ip == null || ip.trim().isEmpty())
             ? getString(R.string.unknown) : ip.trim());
         card.addItem(ipView);
 
@@ -87,8 +88,8 @@ public class NetworkFragment extends RecyclerViewFragment {
         card.addItem(dlSeek);
 
         ButtonView applyBtn = new ButtonView();
-        applyBtn.setTitle(getString(R.string.apply_limits));
-        applyBtn.setOnItemClickListener(item -> {
+        applyBtn.setText(getString(R.string.apply_limits));
+        applyBtn.setOnClickListener(v -> {
             String cmd = "tc qdisc del dev " + WIFI_IFACE + " root 2>/dev/null; "
                 + "tc qdisc add dev " + WIFI_IFACE + " root tbf rate "
                 + mDownloadLimitMbps + "mbit burst 32kbit latency 400ms 2>/dev/null";
@@ -99,8 +100,8 @@ public class NetworkFragment extends RecyclerViewFragment {
         card.addItem(applyBtn);
 
         ButtonView resetBtn = new ButtonView();
-        resetBtn.setTitle(getString(R.string.reset_limits));
-        resetBtn.setOnItemClickListener(item -> {
+        resetBtn.setText(getString(R.string.reset_limits));
+        resetBtn.setOnClickListener(v -> {
             RootUtils.runCommand("tc qdisc del dev " + WIFI_IFACE + " root 2>/dev/null");
             Utils.toast(getString(R.string.unlimited), getActivity());
         });
@@ -150,11 +151,11 @@ public class NetworkFragment extends RecyclerViewFragment {
         }
 
         ButtonView refreshBtn = new ButtonView();
-        refreshBtn.setTitle(getString(R.string.scan_devices));
-        refreshBtn.setOnItemClickListener(item ->
-            requireActivity().getSupportFragmentManager()
+        refreshBtn.setText(getString(R.string.scan_devices));
+        refreshBtn.setOnClickListener(v ->
+            getParentFragmentManager()
                 .beginTransaction()
-                .replace(R.id.content_frame, new NetworkFragment(), "NetworkFragment_key")
+                .replace(R.id.content_frame, new NetworkFragment())
                 .commitAllowingStateLoss());
         card.addItem(refreshBtn);
 
