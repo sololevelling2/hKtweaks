@@ -1,5 +1,6 @@
 package com.hades.hKtweaks.fragments.other;
 
+import android.view.View;
 import java.util.Arrays;
 import java.util.List;
 
@@ -15,8 +16,8 @@ import com.hades.hKtweaks.views.recyclerview.SelectView;
 import com.hades.hKtweaks.views.recyclerview.SwitchView;
 
 /**
- * BluetoothFixFragment — fixes for BT HID issues on Samsung Exynos / One UI 6.1.1.
- * Targets keyboards and other HID devices losing connection after screen-off/reconnect.
+ * BluetoothFixFragment — targeted fixes for BT HID issues on Samsung Exynos / One UI 6.1.1.
+ * Addresses keyboards and input devices losing connection after reconnect.
  */
 public class BluetoothFixFragment extends RecyclerViewFragment {
 
@@ -40,8 +41,8 @@ public class BluetoothFixFragment extends RecyclerViewFragment {
         card.addItem(desc);
 
         ButtonView resetBtn = new ButtonView();
-        resetBtn.setTitle(getString(R.string.bt_reset));
-        resetBtn.setOnItemClickListener(item -> {
+        resetBtn.setText(getString(R.string.bt_reset));
+        resetBtn.setOnClickListener(v -> {
             Utils.toast(getString(R.string.bt_service_restarting), getActivity());
             RootUtils.runCommand("svc bluetooth disable 2>/dev/null");
             RootUtils.runCommand("sleep 1");
@@ -51,8 +52,8 @@ public class BluetoothFixFragment extends RecyclerViewFragment {
         card.addItem(resetBtn);
 
         ButtonView clearHidBtn = new ButtonView();
-        clearHidBtn.setTitle(getString(R.string.bt_clear_hid));
-        clearHidBtn.setOnItemClickListener(item -> {
+        clearHidBtn.setText(getString(R.string.bt_clear_hid));
+        clearHidBtn.setOnClickListener(v -> {
             Utils.toast(getString(R.string.bt_service_restarting), getActivity());
             RootUtils.runCommand("svc bluetooth disable 2>/dev/null");
             RootUtils.runCommand("sleep 1");
@@ -76,14 +77,12 @@ public class BluetoothFixFragment extends RecyclerViewFragment {
         card.addItem(desc);
 
         ButtonView fixBtn = new ButtonView();
-        fixBtn.setTitle(getString(R.string.bt_fix_keyboard));
-        fixBtn.setOnItemClickListener(item -> {
-            // Samsung One UI 6.1.1 BT HID keyboard reconnect fix
+        fixBtn.setText(getString(R.string.bt_fix_keyboard));
+        fixBtn.setOnClickListener(v -> {
             RootUtils.runCommand(
                 "setprop bluetooth.profile.hid.host.enabled true 2>/dev/null");
             RootUtils.runCommand(
                 "settings put secure bluetooth_hfp_client_audio_channel_mask 2 2>/dev/null");
-            // Force-clear HID descriptor cache for Exynos BT stack
             RootUtils.runCommand(
                 "rm -f /data/misc/bluetooth/hiddescriptors.bin 2>/dev/null");
             RootUtils.runCommand("svc bluetooth disable 2>/dev/null");
@@ -109,11 +108,11 @@ public class BluetoothFixFragment extends RecyclerViewFragment {
             "getprop net.bt.nap.disabled 2>/dev/null").trim();
         int idx = "0".equals(cur) ? 1 : 0;
 
-        SelectView coexSel = new SelectView();
-        coexSel.setTitle(getString(R.string.bt_coexistence));
-        coexSel.setItems(Arrays.asList(modes));
-        coexSel.setItem(idx);
-        coexSel.setOnItemSelected((selectView, position, it) -> {
+        SelectView sel = new SelectView();
+        sel.setTitle(getString(R.string.bt_coexistence));
+        sel.setItems(Arrays.asList(modes));
+        sel.setItem(idx);
+        sel.setOnItemSelected((selectView, position, it) -> {
             if (position == 0) {
                 RootUtils.runCommand("setprop net.bt.nap.disabled 1 2>/dev/null");
                 RootUtils.runCommand(
@@ -128,7 +127,7 @@ public class BluetoothFixFragment extends RecyclerViewFragment {
                     "echo 2 > /sys/module/wlan_sdio/parameters/bt_coex_active 2>/dev/null");
             }
         });
-        card.addItem(coexSel);
+        card.addItem(sel);
 
         items.add(card);
     }
@@ -144,15 +143,15 @@ public class BluetoothFixFragment extends RecyclerViewFragment {
         boolean snoopOn = "true".equals(
             RootUtils.runCommand(
                 "getprop persist.bluetooth.btsnoopenable 2>/dev/null").trim());
-        SwitchView snoop = new SwitchView();
-        snoop.setTitle(getString(R.string.bt_hci_snoop));
-        snoop.setSummaryOn(getString(R.string.bt_hci_snoop));
-        snoop.setSummaryOff(getString(R.string.bt_hci_snoop_summary));
-        snoop.setChecked(snoopOn);
-        snoop.addOnSwitchListener((switchView, checked) ->
+        SwitchView sw = new SwitchView();
+        sw.setTitle(getString(R.string.bt_hci_snoop));
+        sw.setSummaryOn(getString(R.string.bt_hci_snoop));
+        sw.setSummaryOff(getString(R.string.bt_hci_snoop_summary));
+        sw.setChecked(snoopOn);
+        sw.addOnSwitchListener((switchView, checked) ->
             RootUtils.runCommand("setprop persist.bluetooth.btsnoopenable "
                 + (checked ? "true" : "false") + " 2>/dev/null"));
-        card.addItem(snoop);
+        card.addItem(sw);
 
         items.add(card);
     }
